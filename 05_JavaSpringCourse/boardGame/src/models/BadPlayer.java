@@ -7,11 +7,20 @@ import java.util.Arrays;
 public class BadPlayer extends NormalPlayer {
     @Override
     public void playDice(){
-        int value = Arrays.stream(PlayDice.go()).sum();
-        while (value>=7) {
-            value = Arrays.stream(PlayDice.go()).sum();
-        }
-        this.position += value;
+        int []value = Arrays.stream(PlayDice.go()).toArray();
+        do {
+            int sum = value[0] + value[1];
+            while (sum >= 7) {
+                value = Arrays.stream(PlayDice.go()).toArray();
+                sum = value[0] + value[1];
+            }
+            if(value[0] == value[1]) {
+                System.out.println("Números iguais nos dados, jogando novamente... ");
+                value = Arrays.stream(PlayDice.go()).toArray();
+                sum += value[0] + value[1];
+            }
+            this.position += sum;
+        } while (value[0] == value[1]);
     }
 
 }
