@@ -27,8 +27,8 @@ public class Board {
 
     private static void specialCases(ArrayList listOfPlayers, Player currentPlayer) {
         switch (currentPlayer.getPosition()) {
-            case 10, 25, 28 -> SkipRule.apply(currentPlayer);
-            case 13 -> SurpriseRule.apply(currentPlayer);
+//            case 10, 25, 28 -> SkipRule.apply(currentPlayer);
+//            case 13 -> SurpriseRule.apply(currentPlayer);
             case 5, 15, 30 -> LuckRule.apply(currentPlayer);
             case 17, 27 -> RestartRule.apply(listOfPlayers, currentPlayer);
             case 20, 35 -> MagicRule.apply(listOfPlayers, currentPlayer);
