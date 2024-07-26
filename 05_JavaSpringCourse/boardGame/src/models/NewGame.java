@@ -1,5 +1,7 @@
 package models;
 
+import rules.*;
+
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -12,6 +14,7 @@ public class NewGame {
         ArrayList<Player> listOfPlayers = new ArrayList();
         for (int i=0; i<numberOfPlayers; i++){
             selectPlayerType(listOfPlayers, i+1);
+
         }
         while (!endGame(listOfPlayers)) {
             playRound(listOfPlayers);
@@ -36,6 +39,7 @@ public class NewGame {
     }
     private void selectPlayerType(ArrayList<Player> listOfPlayers, int indexOfPlayer){
         int typeOfPlayer;
+        Player player;
         System.out.println("""
                 Tipos de jogador:
                 1 - Jogador normal
@@ -50,29 +54,53 @@ public class NewGame {
                 continue;
             }
             switch (typeOfPlayer) {
-                case 1 -> listOfPlayers.add(new NormalPlayer());
-                case 2 -> listOfPlayers.add(new LuckPlayer());
-                case 3 -> listOfPlayers.add(new BadPlayer());
+                case 1 -> {
+                    player = new NormalPlayer(indexOfPlayer, 0);
+                }
+                case 2 -> {
+                    player = new LuckPlayer(indexOfPlayer, 0);
+                }
+                case 3 -> {
+                    player = new BadPlayer(indexOfPlayer, 0);
+                }
                 default -> {
                     System.out.println("Inválido: Selecione um tipo de 1 a 3!");
                     continue;
                 }
             }
+            if (indexOfPlayer==2 && listOfPlayers.get(0).getClass() == player.getClass()) {
+                System.out.println("Os jogadores devem ter tipos diferentes. Selecione um novo tipo para o jogador 2.");
+                continue;
+            }
             break;
         }
+        listOfPlayers.add(player);
     }
+
     private void playRound(ArrayList<Player> listOfPlayers) {
         for (Player player : listOfPlayers) {
-            Board.generateBoard(listOfPlayers);
-            if (player.isCanPlay()) player.playDice(player.getId());
-            else player.setCanPlay(true);
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            System.out.printf("\nPosição do Player %d: %d\n\n", player.getId(), player.getPosition());
+            if (player.isCanPlay()) {
+                player.playDice(player.getId());
+                specialCases(listOfPlayers, player);
+            }
+            else {
+                System.out.printf("O Player %d pulou a rodada.", player.getId());
+                player.setCanPlay(true);
             }
         }
     }
+
+    private static void specialCases(ArrayList listOfPlayers, Player currentPlayer) {
+        switch (currentPlayer.getPosition()) {
+            case 10, 25, 38 -> SkipRule.apply(currentPlayer);
+            case 13 -> SurpriseRule.apply(currentPlayer);
+            case 5, 15, 30 -> LuckRule.apply(currentPlayer);
+            case 17, 27 -> RestartRule.apply(listOfPlayers, currentPlayer);
+            case 20, 35 -> MagicRule.apply(listOfPlayers, currentPlayer);
+        }
+    }
+
     private boolean endGame(ArrayList<Player> listOfPlayers) {
         for (Player player : listOfPlayers){
             if (player.isWinner()) {

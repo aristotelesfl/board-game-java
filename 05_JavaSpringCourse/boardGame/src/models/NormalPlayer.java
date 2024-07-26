@@ -4,9 +4,6 @@ import utils.PlayDice;
 import java.util.Arrays;
 
 public class NormalPlayer extends Player {
-    public NormalPlayer(){
-        super();
-    }
     public NormalPlayer(int id, int position) {
         super(id, position);
     }

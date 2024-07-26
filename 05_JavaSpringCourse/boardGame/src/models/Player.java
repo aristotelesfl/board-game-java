@@ -3,15 +3,11 @@ package models;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Player {
-    private static final AtomicInteger globalIdCounter = new AtomicInteger(0);
     private final int id;
     protected int position = 0;
     private boolean isWinner = false;
 
     private boolean canPlay = true;
-    public Player() {
-        this.id = globalIdCounter.incrementAndGet();
-    }
     public Player(int id, int position) {
         this.id = id;
         this.position = position;
