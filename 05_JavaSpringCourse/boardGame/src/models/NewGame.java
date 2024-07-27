@@ -7,11 +7,10 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class NewGame {
-    boolean isWinner;
     Scanner input = new Scanner(System.in);
     public void start(){
         int numberOfPlayers = selectNumberOfPlayers();
-        ArrayList<Player> listOfPlayers = new ArrayList();
+        ArrayList<Player> listOfPlayers = new ArrayList<>();
         for (int i=0; i<numberOfPlayers; i++){
             selectPlayerType(listOfPlayers, i+1);
 
@@ -54,15 +53,9 @@ public class NewGame {
                 continue;
             }
             switch (typeOfPlayer) {
-                case 1 -> {
-                    player = new NormalPlayer(indexOfPlayer, 0);
-                }
-                case 2 -> {
-                    player = new LuckPlayer(indexOfPlayer, 0);
-                }
-                case 3 -> {
-                    player = new BadPlayer(indexOfPlayer, 0);
-                }
+                case 1 -> player = new NormalPlayer(indexOfPlayer, 0);
+                case 2 -> player = new LuckPlayer(indexOfPlayer, 0);
+                case 3 -> player = new BadPlayer(indexOfPlayer, 0);
                 default -> {
                     System.out.println("Inválido: Selecione um tipo de 1 a 3!");
                     continue;
@@ -82,11 +75,16 @@ public class NewGame {
             System.out.printf("\nPosição do Player %d: %d\n\n", player.getId(), player.getPosition());
             if (player.isCanPlay()) {
                 player.playDice(player.getId());
+                player.nextRoud();
                 specialCases(listOfPlayers, player);
             }
             else {
                 System.out.printf("O Player %d pulou a rodada.", player.getId());
                 player.setCanPlay(true);
+            }
+            if (player.isWinner()) {
+                System.out.printf("O player %d Venceu em %d rodadas", player.getId(), player.getRounds());
+                break;
             }
         }
     }
@@ -94,7 +92,11 @@ public class NewGame {
     private static void specialCases(ArrayList listOfPlayers, Player currentPlayer) {
         switch (currentPlayer.getPosition()) {
             case 10, 25, 38 -> SkipRule.apply(currentPlayer);
-            case 13 -> SurpriseRule.apply(currentPlayer);
+            case 13 -> {
+                int index = listOfPlayers.indexOf(currentPlayer);
+                Player newPlayer = SurpriseRule.apply(currentPlayer);
+                listOfPlayers.set(index, newPlayer);
+            }
             case 5, 15, 30 -> LuckRule.apply(currentPlayer);
             case 17, 27 -> RestartRule.apply(listOfPlayers, currentPlayer);
             case 20, 35 -> MagicRule.apply(listOfPlayers, currentPlayer);
@@ -103,7 +105,8 @@ public class NewGame {
 
     private boolean endGame(ArrayList<Player> listOfPlayers) {
         for (Player player : listOfPlayers){
-            if (player.isWinner()) {
+            if (player.getPosition() >= 40) {
+                player.isWinner();
                 return true;
             }
         }

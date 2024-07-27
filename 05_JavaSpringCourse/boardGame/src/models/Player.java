@@ -3,10 +3,10 @@ package models;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class Player {
+    private final AtomicInteger rounds = new AtomicInteger(0);
     private final int id;
-    protected int position = 0;
-    private boolean isWinner = false;
-
+    protected int position;
+    boolean isWinner = false;
     private boolean canPlay = true;
     public Player(int id, int position) {
         this.id = id;
@@ -16,7 +16,7 @@ public abstract class Player {
     public int getPosition() {
         return position;
     }
-    public void setPosition(int position){
+    public void setPosition(){
         this.position = 0;
     }
     public void luckMove() {
@@ -25,7 +25,11 @@ public abstract class Player {
     public int getId(){
         return id;
     }
-
+    public void nextRoud() {rounds.incrementAndGet();}
+    public AtomicInteger getRounds() {return rounds;}
+    public void setWinner(){
+        isWinner = true;
+    }
     public boolean isWinner() {
         return isWinner;
     }

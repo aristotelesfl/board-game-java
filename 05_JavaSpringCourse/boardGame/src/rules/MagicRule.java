@@ -4,10 +4,6 @@ import models.Player;
 import utils.ColorMap;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-
-import java.util.ArrayList;
 import java.util.Comparator;
 
 public class MagicRule {
@@ -25,8 +21,8 @@ public class MagicRule {
         int aux = firstPlayer.getPosition();
 
         // Update positions in the original list
-        players.get(players.indexOf(firstPlayer)).setPosition(currentPlayer.getPosition());
-        currentPlayer.setPosition(aux);
+        players.get(players.indexOf(firstPlayer)).setPosition();
+        currentPlayer.setPosition();
 
         try {
             Thread.sleep(2000);

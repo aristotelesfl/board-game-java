@@ -15,7 +15,7 @@ public class RestartRule{
             value = new Scanner(System.in).nextInt();
             if (value != players.indexOf(currentPlayer)+1 &&
                     0 < value && value <= players.size()) {
-                players.get(value-1).setPosition(0);
+                players.get(value-1).setPosition();
                 break;
             } else System.out.println("Jogador Inválido");
         }

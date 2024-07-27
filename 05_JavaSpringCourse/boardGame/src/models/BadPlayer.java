@@ -12,7 +12,7 @@ public class BadPlayer extends Player {
     @Override
     public void playDice(int playerID){
         int value = Arrays.stream(PlayDice.go(playerID)).sum();
-        while (value>=7) {
+        while (value>7) {
             System.out.println("Valor da soma maior que 7, o jogador azarado é obrigado a repetir!");
             value = Arrays.stream(PlayDice.go(playerID)).sum();
         }
